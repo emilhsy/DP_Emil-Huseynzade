@@ -28,7 +28,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['sourdict-d479179ee16a.herokuapp.com']
+ALLOWED_HOSTS = ['https://sourdict-631cedbbda95.herokuapp.com/']
 
 
 # Application definition
