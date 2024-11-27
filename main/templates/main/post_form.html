@@ -1,0 +1,22 @@
+{% extends 'main/base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block title %} write {% endblock %}
+
+{% block content %}
+    <div style="text-transform: lowercase;">
+        <form method="POST">
+            {% csrf_token %}
+
+            <fieldset class="form-group">
+                {{ form.media }}
+                {{ form|crispy }}
+            </fieldset>
+
+            <div class="form-group">
+                <button class="text-primary" style="cursor: pointer; border: none; background: none; outline: none;" type="submit">POST</button>
+            </div>
+        </form>
+    </div>
+{% endblock %}

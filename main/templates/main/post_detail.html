@@ -1,0 +1,112 @@
+{% extends 'main/base.html' %}
+
+{% load social_share %}
+
+{% block title %} {{ object.title }} {% endblock %}
+
+{% block content %}
+  <article class="media">
+
+      <div class="media-body">
+
+        <div class="meta">
+          <a class="mr-2" href="{% url 'user-posts' object.author.username %}">{{ object.author }}</a>
+          <small class="text-muted">{{ object.date_posted|date:"F j, Y" }} • {{ object.views }} 
+            {% if object.views > 1 %}
+            views
+            {% else %}
+            view
+            {% endif %}
+          </small>
+        </div>
+
+        <h2>
+          {{ object.title }}
+        </h2>
+
+        {% if user.is_authenticated %}
+          <div class="mb-5">
+
+            <button class="agree-btn mr-5" data-id="{{ object.id }}" style="outline: none;">
+
+              <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-arrow-up-square-fill" viewBox="0 0 16 16">
+                <path d="M2 16a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2zm6.5-4.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 1 0"/>
+              </svg>
+
+              <small class="text-muted" id="agree-count-{{ object.id }}">{{ object.total_agrees }}</small>
+
+            </button>
+
+            <button class="disagree-btn" data-id="{{ object.id }}" style="outline: none;">
+
+              <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-arrow-down-square-fill" viewBox="0 0 16 16">
+                <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm6.5 4.5v5.793l2.146-2.147a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 1 1 .708-.708L7.5 10.293V4.5a.5.5 0 0 1 1 0"/>
+              </svg>
+
+              <small class="text-muted" id="disagree-count-{{ object.id }}">{{ object.total_disagrees }}</small>
+              
+            </button>
+
+          </div>
+        {% endif %}
+
+        <p>
+          {% autoescape off %} {{ object.content }} {% endautoescape %}
+        </p>
+
+        {% if object.author == user %}
+          <div>
+            <a class="text-primary mr-2" style="text-transform: uppercase;" href="{% url 'post-update' object.id %}">UPDATE</a>
+            <a class="text-danger" style="text-transform: uppercase;" href="{% url 'post-delete' object.id %}">DELETE</a>
+          </div>
+        {% endif %}
+
+        <div class="mt-5 share">
+          {% post_to_whatsapp object_or_url '<i class="fa-brands fa-whatsapp mr-3"></i>' %}
+          {% post_to_facebook object_or_url '<i class="fa-brands fa-facebook mr-3"></i>' %}
+        </div>
+
+      </div>
+
+  </article>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        document.querySelectorAll(".agree-btn").forEach(button => {
+            button.addEventListener("click", function() {
+                const postId = this.dataset.id;
+                fetch(`/post/${postId}/agree/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById(`agree-count-${postId}`).textContent = data.agrees;
+                    document.getElementById(`disagree-count-${postId}`).textContent = data.disagrees;
+                });
+            });
+        });
+
+        document.querySelectorAll(".disagree-btn").forEach(button => {
+            button.addEventListener("click", function() {
+                const postId = this.dataset.id;
+                fetch(`/post/${postId}/disagree/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById(`agree-count-${postId}`).textContent = data.agrees;
+                    document.getElementById(`disagree-count-${postId}`).textContent = data.disagrees;
+                });
+            });
+        });
+    });
+  </script>
+
+
+{% endblock %}

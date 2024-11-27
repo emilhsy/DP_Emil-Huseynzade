@@ -1,0 +1,60 @@
+{% extends 'main/base.html' %}
+
+{% block title %} {{ view.kwargs.username }}'s posts {% endblock %}
+
+{% block content %}
+
+    {% if page_obj.paginator.count > 1 %}
+        <p style="text-align: center;">{{ page_obj.paginator.count }} writings</p>
+    {% else %}
+        <p style="text-align: center;">{{ page_obj.paginator.count }} writing</p>
+    {% endif %}
+
+    {% for post in posts %}
+    <article class="media">
+
+        <div class="media-body">
+
+        <div class="meta">
+            <a class="mr-2">{{ post.author }}</a>
+            <small class="text-muted">{{ post.date_posted|date:"F j, Y" }} • {{ post.views }} 
+                {% if post.views > 1 %}
+                views
+                {% else %}
+                view
+                {% endif %}
+            </small>
+        </div>
+
+        <h2>
+            <a href="{% url 'post-detail' post.id %}">{{ post.title }}</a>
+        </h2>
+
+        </div>
+
+    </article>
+    {% endfor %}
+
+    <div class="mt-5 mb-5 paginator">
+        {% if is_paginated %}
+            {% if page_obj.has_previous %}
+                <a href="?page=1"><i class="fa-solid fa-backward-fast"></i></a>
+                <a href="?page={{ page_obj.previous_page_number }}"><i class="fa-solid fa-backward"></i></a>
+            {% endif %} 
+    
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                    <a href="?page={{ num }}">{{ num }}</a>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <a href="?page={{ num }}">{{ num }}</a>
+                {% endif %} 
+            {% endfor %}
+    
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}"><i class="fa-solid fa-forward"></i></a>
+                <a href="?page={{ page_obj.paginator.num_pages }}"><i class="fa-solid fa-forward-fast"></i></a>
+            {% endif %}
+        {% endif %}
+      </div>
+
+{% endblock %}

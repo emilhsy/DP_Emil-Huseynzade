@@ -1,0 +1,33 @@
+{% extends 'main/base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block title %} my profile {% endblock %}
+
+{% block content %}
+    <div style="text-transform: lowercase;">
+
+        <div class="media">
+
+            <div class="media-body">
+                <h2>{{ user.username }}</h2>
+                <p class="text-secondary">joined at {{ user.date_joined|date:"F j, Y" }}</p>
+            </div>
+
+        </div>
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <fieldset class="form-group">
+                {{ u_form|crispy }}
+            </fieldset>
+
+            <div class="form-group">
+                <a class="mr-2" style="text-transform: uppercase;" href="{% url 'user-posts' user.username %}">MY WRITINGS</a>
+                <button class="text-primary mr-2" style="cursor: pointer; border: none; background: none; outline: none;" type="submit">UPDATE</button>
+            </div>
+        </form>
+    </div>
+{% endblock %}
