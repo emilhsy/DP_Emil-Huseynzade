@@ -48,6 +48,10 @@
         <li><a href="{% url 'register' %}">register</a></li>
         {% endif %}
 
+        {% if user.is_superuser %}
+        <li><a style="font-weight: bold;" href="/admin">admin</a></li>
+        {% endif %}
+
       </ul>
 
       <div class="burger">
