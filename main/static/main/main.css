@@ -21,6 +21,16 @@ nav {
     align-items: center;
     min-height: 8vh;
     background-color: #000814;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+body {
+    margin: 0;
+    padding-top: 8vh;
 }
 
 .logo {
@@ -60,7 +70,7 @@ nav {
     transition: all 0.3s ease
 }
 
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: 1300px) {
     .nav-links {
         width: 60%;
     }
