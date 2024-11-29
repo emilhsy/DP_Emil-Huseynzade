@@ -33,7 +33,9 @@
             <div class="form-group">
                 <a class="mr-2" style="text-transform: uppercase;" href="{% url 'user-posts' user.username %}">MY WRITINGS</a>
                 <button class="text-primary mr-2" style="cursor: pointer; border: none; background: none; outline: none;" type="submit">UPDATE</button>
+                {% if user.is_superuser == False %}
                 <a class="text-danger" style="text-transform: uppercase;" href="{% url 'delete-account' %}">DELETE ACCOUNT</a>
+                {% endif %}
             </div>
         </form>
     </div>
