@@ -1,0 +1,20 @@
+{% extends 'main/base.html' %}
+
+{% block title %} delete account {% endblock %}
+
+{% block content %}
+    <div style="text-transform: lowercase;">
+        <form method="POST">
+          {% csrf_token %}
+
+          <fieldset class="form-group">
+            <h2>are you sure you want to delete your account <b>permanently</b> ?</h2>
+          </fieldset>
+
+          <div class="form-group">
+            <button class="text-danger mr-2" style="cursor: pointer; border: none; background: none; outline: none;" type="submit">YES, DELETE</button>
+            <a class="text-secondary" style="text-transform: uppercase;" href="{% url 'profile' %}">CANCEL</a>            
+          </div>
+        </form>
+    </div>
+{% endblock %}

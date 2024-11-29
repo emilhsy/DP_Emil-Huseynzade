@@ -33,3 +33,13 @@ def profile(request):
     }
     
     return render(request, 'users/profile.html', context)
+
+
+@login_required
+def delete_account(request):
+    if request.method == 'POST':
+        user = request.user
+        user.delete()
+        messages.success(request, 'your account has been deleted successfully.')
+        return redirect('register')
+    return render(request, 'users/delete_account.html')
