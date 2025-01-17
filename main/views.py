@@ -20,12 +20,24 @@ class PostListView(ListView):
     ordering = ['-date_posted']
     paginate_by = 10
 
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        if query:
+            return Post.objects.filter(title__icontains=query).order_by('-date_posted')
+        return super().get_queryset()
+
 class TopListView(ListView):
     model = Post
     template_name = 'main/top.html'
     context_object_name = 'posts'
     ordering = ['-views']
     paginate_by = 10
+
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        if query:
+            return Post.objects.filter(title__icontains=query).order_by('-date_posted')
+        return super().get_queryset()
 
 class UserPostListView(ListView):
     model = Post
@@ -36,7 +48,6 @@ class UserPostListView(ListView):
     def get_queryset(self):
         user = get_object_or_404(User, username=self.kwargs.get('username'))
         return Post.objects.filter(author=user).order_by('-date_posted')
-
 
 # Particular Post
 class PostDetailView(DetailView):
