@@ -47,7 +47,11 @@ class UserPostListView(ListView):
 
     def get_queryset(self):
         user = get_object_or_404(User, username=self.kwargs.get('username'))
-        return Post.objects.filter(author=user).order_by('-date_posted')
+        queryset = Post.objects.filter(author=user).order_by('-date_posted')
+        query = self.request.GET.get('q')
+        if query:
+            queryset = queryset.filter(title__icontains=query)
+        return queryset
 
 # Particular Post
 class PostDetailView(DetailView):

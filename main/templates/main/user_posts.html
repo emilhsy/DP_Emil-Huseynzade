@@ -10,36 +10,56 @@
         <p style="text-align: center;">{{ page_obj.paginator.count }} writing</p>
     {% endif %}
 
-    {% for post in posts %}
-    <article class="media">
+    <form action="" class="search-form">
+        <input
+            type="search"
+            name="q"
+            placeholder="Search"
+            aria-label="Search"
+            value="{{ request.GET.q }}"
+            class="search-input"
+        >
+        <button type="submit" class="search-button">
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+    </form>
 
-        <div class="media-body">
+    <br>
 
-        <div class="meta">
-            {% if post.author.is_superuser %}
-                <a style="font-size: 20px; font-weight: bold;" class="mr-2" href="{% url 'user-posts' post.author.username %}">{{ post.author }} <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="blue" class="bi bi-patch-check-fill" viewBox="0 0 16 16">
-                <path d="M10.067.87a2.89 2.89 0 0 0-4.134 0l-.622.638-.89-.011a2.89 2.89 0 0 0-2.924 2.924l.01.89-.636.622a2.89 2.89 0 0 0 0 4.134l.637.622-.011.89a2.89 2.89 0 0 0 2.924 2.924l.89-.01.622.636a2.89 2.89 0 0 0 4.134 0l.622-.637.89.011a2.89 2.89 0 0 0 2.924-2.924l-.01-.89.636-.622a2.89 2.89 0 0 0 0-4.134l-.637-.622.011-.89a2.89 2.89 0 0 0-2.924-2.924l-.89.01zm.287 5.984-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7 8.793l2.646-2.647a.5.5 0 0 1 .708.708"/>
-                </svg></a>
-            {% else %}
-                <a class="mr-2" href="{% url 'user-posts' post.author.username %}">{{ post.author }}</a>
-            {% endif %}
-            <small class="text-muted">{{ post.date_posted|date:"F j, Y" }} • {{ post.views }} 
-                {% if post.views > 1 %}
-                views
+    {% if posts %}
+        {% for post in posts %}
+        <article class="media">
+
+            <div class="media-body">
+
+            <div class="meta">
+                {% if post.author.is_superuser %}
+                    <a style="font-size: 20px; font-weight: bold;" class="mr-2" href="{% url 'user-posts' post.author.username %}">{{ post.author }} <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="blue" class="bi bi-patch-check-fill" viewBox="0 0 16 16">
+                    <path d="M10.067.87a2.89 2.89 0 0 0-4.134 0l-.622.638-.89-.011a2.89 2.89 0 0 0-2.924 2.924l.01.89-.636.622a2.89 2.89 0 0 0 0 4.134l.637.622-.011.89a2.89 2.89 0 0 0 2.924 2.924l.89-.01.622.636a2.89 2.89 0 0 0 4.134 0l.622-.637.89.011a2.89 2.89 0 0 0 2.924-2.924l-.01-.89.636-.622a2.89 2.89 0 0 0 0-4.134l-.637-.622.011-.89a2.89 2.89 0 0 0-2.924-2.924l-.89.01zm.287 5.984-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7 8.793l2.646-2.647a.5.5 0 0 1 .708.708"/>
+                    </svg></a>
                 {% else %}
-                view
+                    <a class="mr-2" href="{% url 'user-posts' post.author.username %}">{{ post.author }}</a>
                 {% endif %}
-            </small>
-        </div>
+                <small class="text-muted">{{ post.date_posted|date:"F j, Y" }} • {{ post.views }} 
+                    {% if post.views > 1 %}
+                    views
+                    {% else %}
+                    view
+                    {% endif %}
+                </small>
+            </div>
 
-        <h2>
-            <a href="{% url 'post-detail' post.id %}">{{ post.title }}</a>
-        </h2>
+            <h2>
+                <a href="{% url 'post-detail' post.id %}">{{ post.title }}</a>
+            </h2>
 
-        </div>
+            </div>
 
-    </article>
-    {% endfor %}
+        </article>
+        {% endfor %}
+    {% else %}
+        <p>No posts found matching your search criteria.</p>
+    {% endif %}
 
     <div class="mt-5 mb-5 paginator">
         {% if is_paginated %}
