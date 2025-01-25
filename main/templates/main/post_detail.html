@@ -106,77 +106,77 @@
 
   <script>
     document.addEventListener("DOMContentLoaded", function() {
-        document.querySelectorAll(".agree-btn").forEach(button => {
-            button.addEventListener("click", function() {
-                const postId = this.dataset.id;
-                fetch(`/post/${postId}/agree/`, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRFToken': '{{ csrf_token }}',
-                    },
-                })
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById(`agree-count-${postId}`).textContent = data.agrees;
-                    document.getElementById(`disagree-count-${postId}`).textContent = data.disagrees;
-                });
-            });
-        });
+      const commentForm = document.getElementById("add-comment-form");
+      const commentsList = document.getElementById("comments-list");
+      const commentContent = document.getElementById("comment-content");
 
-        document.querySelectorAll(".disagree-btn").forEach(button => {
-            button.addEventListener("click", function() {
-                const postId = this.dataset.id;
-                fetch(`/post/${postId}/disagree/`, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRFToken': '{{ csrf_token }}',
-                    },
-                })
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById(`agree-count-${postId}`).textContent = data.agrees;
-                    document.getElementById(`disagree-count-${postId}`).textContent = data.disagrees;
-                });
+      document.querySelectorAll(".agree-btn").forEach(button => {
+        button.addEventListener("click", function() {
+          const postId = this.dataset.id;
+          fetch(`/post/${postId}/agree/`, {
+            method: 'POST',
+            headers: {
+              'X-CSRFToken': '{{ csrf_token }}',
+            },
+          })
+          .then(response => response.json())
+            .then(data => {
+              document.getElementById(`agree-count-${postId}`).textContent = data.agrees;
+              document.getElementById(`disagree-count-${postId}`).textContent = data.disagrees;
             });
         });
+      });
+
+      document.querySelectorAll(".disagree-btn").forEach(button => {
+        button.addEventListener("click", function() {
+          const postId = this.dataset.id;
+          fetch(`/post/${postId}/disagree/`, {
+            method: 'POST',
+            headers: {
+              'X-CSRFToken': '{{ csrf_token }}',
+            },
+          })
+          .then(response => response.json())
+            .then(data => {
+              document.getElementById(`agree-count-${postId}`).textContent = data.agrees;
+              document.getElementById(`disagree-count-${postId}`).textContent = data.disagrees;
+            });
+        });
+      });
     });
 
     document.addEventListener("DOMContentLoaded", function () {
-    const commentForm = document.getElementById("add-comment-form");
-    const commentsList = document.getElementById("comments-list");
-    const commentContent = document.getElementById("comment-content");
+      if (commentForm) {
+        commentForm.addEventListener("submit", function (e) {
+          e.preventDefault();
 
-    if (commentForm) {
-      commentForm.addEventListener("submit", function (e) {
-        e.preventDefault();
+          const content = commentContent.value.trim();
+          if (!content) return;
 
-        const content = commentContent.value.trim();
-        if (!content) return;
-
-        fetch("{% url 'add-comment' object.id %}", {
-          method: "POST",
-          headers: {
-            "X-CSRFToken": "{{ csrf_token }}",
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-          body: new URLSearchParams({ content: content }),
-        })
-          .then(response => response.json())
-          .then(data => {
-            if (data.error) {
-              alert(data.error);
-            } else {
-              const newComment = document.createElement("li");
-              newComment.innerHTML = `
-                <strong>${data.author}</strong>
-                <small class="text-muted">${data.date_posted}</small>
-                <p>${data.content}</p>
-              `;
-              commentsList.appendChild(newComment);
-              commentContent.value = ""; // Clear the input
-            }
+          fetch("{% url 'post-comment' object.id %}", {
+            method: "POST",
+            headers: {
+              "X-CSRFToken": "{{ csrf_token }}",
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: new URLSearchParams({ content: content }),
           })
-          .catch(error => console.error("Error:", error));
+            .then(response => response.json())
+            .then(data => {
+              if (data.error) {
+                alert(data.error);
+              } else {
+                const newComment = document.createElement("li");
+                newComment.innerHTML = `
+                  <strong>${data.author}</strong>
+                  <small class="text-muted">${data.date_posted}</small>
+                  <p>${data.content}</p>
+                `;
+                commentsList.appendChild(newComment);
+                commentContent.value = "";
+              }
+            })
+            .catch(error => console.error("Error:", error));
       });
     }
   });
