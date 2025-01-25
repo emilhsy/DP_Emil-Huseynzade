@@ -78,7 +78,7 @@
           <h3>comments ({{ object.comments.count }})</h3>
       
           <ul id="comments-list" style="list-style: none;">
-            {% for comment in object.comments.all|dictsortreversed:"date_posted" %}
+            {% for comment in object.comments.all %}
               <li>
                 <a style="font-size: 16px; font-weight: bold;" class="mr-2" href="{% url 'user-posts' comment.author.username %}">{{ comment.author }}</a>
                 <small class="text-muted">{{ comment.date_posted|date:"M d, Y, H:i" }}</small>
@@ -165,7 +165,7 @@
             } else {
               const newComment = document.createElement("li");
               newComment.innerHTML = `
-                <strong>${data.author}</strong>
+                <a style="font-size: 16px; font-weight: bold;" class="mr-2" href="{% url 'user-posts' comment.author.username %}">${data.author}</a>
                 <small class="text-muted">${data.date_posted}</small>
                 <p>${data.content}</p>
               `;
@@ -173,7 +173,7 @@
               commentContent.value = "";
 
               const currentCount = parseInt(commentCountElement.textContent.match(/\d+/)[0]);
-              commentCountElement.textContent = `Comments (${currentCount + 1})`;
+              commentCountElement.textContent = `comments (${currentCount + 1})`;
             }
           })
           .catch((error) => console.error("Error:", error));
