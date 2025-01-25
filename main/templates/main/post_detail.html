@@ -107,6 +107,7 @@
       const commentForm = document.getElementById("add-comment-form");
       const commentsList = document.getElementById("comments-list");
       const commentContent = document.getElementById("comment-content");
+      const commentCountElement = document.querySelector("#comments-section h3");
 
       document.querySelectorAll(".agree-btn").forEach(button => {
         button.addEventListener("click", function() {
@@ -170,6 +171,9 @@
               `;
               commentsList.appendChild(newComment);
               commentContent.value = "";
+
+              const currentCount = parseInt(commentCountElement.textContent.match(/\d+/)[0]);
+              commentCountElement.textContent = `Comments (${currentCount + 1})`;
             }
           })
           .catch((error) => console.error("Error:", error));
