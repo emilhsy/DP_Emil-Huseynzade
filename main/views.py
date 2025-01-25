@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 
-from .models import Post
+from .models import Post, Comment
 from django.contrib.auth.models import User
 
 from django.contrib.auth.decorators import login_required
@@ -124,3 +124,18 @@ def PostDisagreeView(request, pk):
         post.agrees.remove(request.user)
         
     return JsonResponse({'agrees': post.total_agrees(), 'disagrees': post.total_disagrees()})
+
+# Comments Section
+@login_required
+def PostCommentView(request, pk):
+    if request.method == "POST":
+        post = get_object_or_404(Post, pk=pk)
+        content = request.POST.get('content')
+        if content:
+            comment = Comment.objects.create(post=post, author=request.user, content=content)
+            return JsonResponse({
+                'author': comment.author.username,
+                'content': comment.content,
+                'date_posted': comment.date_posted.strftime('%b %d, %Y, %I:%M %p')
+            })
+    return JsonResponse({'error': 'Invalid request'}, status=400)

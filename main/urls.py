@@ -1,6 +1,8 @@
 from django.urls import path
 
-from .views import PostListView, PostDetailView, PostCreateView, PostUpdateView, PostDeleteView, UserPostListView, PostAgreeView, PostDisagreeView, TopListView
+from .views import (PostListView, PostDetailView, PostCreateView,
+                    PostUpdateView, PostDeleteView, UserPostListView,
+                    PostAgreeView, PostDisagreeView, TopListView, PostCommentView)
 
 urlpatterns = [
     path('', PostListView.as_view(), name='main-home'),
@@ -15,4 +17,6 @@ urlpatterns = [
 
     path('post/<int:pk>/agree/', PostAgreeView, name='post-agree'),
     path('post/<int:pk>/disagree/', PostDisagreeView, name='post-disagree'),
+
+    path('post/<int:pk>/comment/', PostCommentView, name='post-comment'),
 ]

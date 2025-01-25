@@ -74,6 +74,34 @@
 
       </div>
 
+      <section id="comments-section" class="mt-5">
+        <h3>Comments ({{ object.comments.count }})</h3>
+    
+        <!-- Display Existing Comments -->
+        <ul id="comments-list">
+          {% for comment in object.comments.all %}
+            <li>
+              <strong>{{ comment.author }}</strong>
+              <small class="text-muted">{{ comment.date_posted|date:"M d, Y, H:i" }}</small>
+              <p>{{ comment.content }}</p>
+            </li>
+          {% empty %}
+            <p>No comments yet. Be the first to comment!</p>
+          {% endfor %}
+        </ul>
+    
+        <!-- Add New Comment -->
+        {% if user.is_authenticated %}
+        <form id="add-comment-form" class="mt-3">
+          {% csrf_token %}
+          <textarea id="comment-content" name="content" class="form-control" rows="3" placeholder="Write a comment..."></textarea>
+          <button type="submit" class="btn btn-primary mt-2">Post</button>
+        </form>
+        {% else %}
+        <p><a href="{% url 'login' %}">Log in</a> to leave a comment.</p>
+        {% endif %}
+      </section>
+
   </article>
 
   <script>
@@ -112,6 +140,46 @@
             });
         });
     });
+
+    document.addEventListener("DOMContentLoaded", function () {
+    const commentForm = document.getElementById("add-comment-form");
+    const commentsList = document.getElementById("comments-list");
+    const commentContent = document.getElementById("comment-content");
+
+    if (commentForm) {
+      commentForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const content = commentContent.value.trim();
+        if (!content) return;
+
+        fetch("{% url 'add-comment' object.id %}", {
+          method: "POST",
+          headers: {
+            "X-CSRFToken": "{{ csrf_token }}",
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: new URLSearchParams({ content: content }),
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (data.error) {
+              alert(data.error);
+            } else {
+              const newComment = document.createElement("li");
+              newComment.innerHTML = `
+                <strong>${data.author}</strong>
+                <small class="text-muted">${data.date_posted}</small>
+                <p>${data.content}</p>
+              `;
+              commentsList.appendChild(newComment);
+              commentContent.value = ""; // Clear the input
+            }
+          })
+          .catch(error => console.error("Error:", error));
+      });
+    }
+  });
   </script>
 
 
