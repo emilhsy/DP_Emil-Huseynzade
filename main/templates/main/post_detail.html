@@ -165,7 +165,7 @@
             } else {
               const newComment = document.createElement("li");
               newComment.innerHTML = `
-                <a style="font-size: 16px; font-weight: bold;" class="mr-2" href="{% url 'user-posts' comment.author.username %}">${data.author}</a>
+                <a style="font-size: 16px; font-weight: bold;" class="mr-2">${data.author}</a>
                 <small class="text-muted">${data.date_posted}</small>
                 <p>${data.content}</p>
               `;
