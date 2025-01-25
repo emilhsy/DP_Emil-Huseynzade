@@ -72,35 +72,35 @@
           {% post_to_facebook object_or_url '<i class="fa-brands fa-facebook mr-3"></i>' %}
         </div>
 
-      </div>
+        <section id="comments-section" class="mt-5">
+          <h3>Comments ({{ object.comments.count }})</h3>
+      
+          <!-- Display Existing Comments -->
+          <ul id="comments-list">
+            {% for comment in object.comments.all %}
+              <li>
+                <strong>{{ comment.author }}</strong>
+                <small class="text-muted">{{ comment.date_posted|date:"M d, Y, H:i" }}</small>
+                <p>{{ comment.content }}</p>
+              </li>
+            {% empty %}
+              <p>No comments yet. Be the first to comment!</p>
+            {% endfor %}
+          </ul>
+      
+          <!-- Add New Comment -->
+          {% if user.is_authenticated %}
+          <form id="add-comment-form" class="mt-3">
+            {% csrf_token %}
+            <textarea id="comment-content" name="content" class="form-control" rows="3" placeholder="Write a comment..."></textarea>
+            <button type="submit" class="btn btn-primary mt-2">Post</button>
+          </form>
+          {% else %}
+          <p><a href="{% url 'login' %}">Log in</a> to leave a comment.</p>
+          {% endif %}
+        </section>
 
-      <section id="comments-section" class="mt-5">
-        <h3>Comments ({{ object.comments.count }})</h3>
-    
-        <!-- Display Existing Comments -->
-        <ul id="comments-list">
-          {% for comment in object.comments.all %}
-            <li>
-              <strong>{{ comment.author }}</strong>
-              <small class="text-muted">{{ comment.date_posted|date:"M d, Y, H:i" }}</small>
-              <p>{{ comment.content }}</p>
-            </li>
-          {% empty %}
-            <p>No comments yet. Be the first to comment!</p>
-          {% endfor %}
-        </ul>
-    
-        <!-- Add New Comment -->
-        {% if user.is_authenticated %}
-        <form id="add-comment-form" class="mt-3">
-          {% csrf_token %}
-          <textarea id="comment-content" name="content" class="form-control" rows="3" placeholder="Write a comment..."></textarea>
-          <button type="submit" class="btn btn-primary mt-2">Post</button>
-        </form>
-        {% else %}
-        <p><a href="{% url 'login' %}">Log in</a> to leave a comment.</p>
-        {% endif %}
-      </section>
+      </div>
 
   </article>
 
