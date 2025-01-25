@@ -127,15 +127,15 @@ def PostDisagreeView(request, pk):
 
 # Comments Section
 @login_required
-def PostCommentView(request, pk):
+def add_comment(request, pk):
     if request.method == "POST":
         post = get_object_or_404(Post, pk=pk)
-        content = request.POST.get('content')
+        content = request.POST.get("content")
         if content:
             comment = Comment.objects.create(post=post, author=request.user, content=content)
             return JsonResponse({
-                'author': comment.author.username,
-                'content': comment.content,
-                'date_posted': comment.date_posted.strftime('%b %d, %Y, %I:%M %p')
+                "author": comment.author.username,
+                "content": comment.content,
+                "date_posted": comment.date_posted.strftime("%B %d, %Y"),
             })
-    return JsonResponse({'error': 'Invalid request'}, status=400)
+    return JsonResponse({"error": "Invalid request"}, status=400)

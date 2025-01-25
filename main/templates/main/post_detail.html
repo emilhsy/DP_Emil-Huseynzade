@@ -81,7 +81,7 @@
             {% for comment in object.comments.all %}
               <li>
                 <strong>{{ comment.author }}</strong>
-                <small class="text-muted">{{ comment.date_posted|date:"F j, Y" }}</small>
+                <small class="text-muted">{{ comment.date_posted|date:"M d, Y, H:i" }}</small>
                 <p>{{ comment.content }}</p>
               </li>
             {% empty %}
@@ -93,7 +93,7 @@
             <form id="add-comment-form" class="mt-3">
               {% csrf_token %}
               <textarea id="comment-content" name="content" class="form-control" rows="3"></textarea>
-              <button class="text-dark" style="cursor: pointer; border: none; background: none; outline: none;" type="submit">POST</button>
+              <button class="text-dark mt-2" style="cursor: pointer; border: none; background: none; outline: none;" type="submit">POST</button>
             </form>
           {% endif %}
         </section>
@@ -141,40 +141,38 @@
             });
         });
       });
-    });
 
-    document.addEventListener("DOMContentLoaded", function () {
       if (commentForm) {
         commentForm.addEventListener("submit", function (e) {
-          e.preventDefault();
+        e.preventDefault();
 
-          const content = commentContent.value.trim();
-          if (!content) return;
+        const content = commentContent.value.trim();
+        if (!content) return;
 
-          fetch("{% url 'post-comment' object.id %}", {
-            method: "POST",
-            headers: {
-              "X-CSRFToken": "{{ csrf_token }}",
-              "Content-Type": "application/x-www-form-urlencoded",
-            },
-            body: new URLSearchParams({ content: content }),
+        fetch("{% url 'post-comment' object.id %}", {
+          method: "POST",
+          headers: {
+            "X-CSRFToken": "{{ csrf_token }}",
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: new URLSearchParams({ content: content }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.error) {
+              alert(data.error);
+            } else {
+              const newComment = document.createElement("li");
+              newComment.innerHTML = `
+                <strong>${data.author}</strong>
+                <small class="text-muted">${data.date_posted}</small>
+                <p>${data.content}</p>
+              `;
+              commentsList.appendChild(newComment);
+              commentContent.value = "";
+            }
           })
-            .then(response => response.json())
-            .then(data => {
-              if (data.error) {
-                alert(data.error);
-              } else {
-                const newComment = document.createElement("li");
-                newComment.innerHTML = `
-                  <strong>${data.author}</strong>
-                  <small class="text-muted">${data.date_posted}</small>
-                  <p>${data.content}</p>
-                `;
-                commentsList.appendChild(newComment);
-                commentContent.value = "";
-              }
-            })
-            .catch(error => console.error("Error:", error));
+          .catch((error) => console.error("Error:", error));
       });
     }
   });
