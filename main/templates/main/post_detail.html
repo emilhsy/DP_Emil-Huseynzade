@@ -24,7 +24,7 @@
               view
             {% endif %}
             
-            {% if !user.is_authenticated %}
+            {% if not user.is_authenticated %}
              • {{ object.total_agrees }} agreed / {{ object.total_disagrees }} disagreed
             {% endif %}
           </small>
