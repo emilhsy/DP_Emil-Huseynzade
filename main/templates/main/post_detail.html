@@ -19,10 +19,14 @@
           {% endif %}
           <small class="text-muted">{{ object.date_posted|date:"F j, Y" }} • {{ object.views }} 
             {% if object.views > 1 %}
-            views
+              views
             {% else %}
-            view
-            {% endif %} • {{ object.total_agrees }} agreed / {{ object.total_disagrees }} disagreed
+              view
+            {% endif %}
+            
+            {% if !user.is_authenticated %}
+             • {{ object.total_agrees }} agreed / {{ object.total_disagrees }} disagreed
+            {% endif %}
           </small>
         </div>
 
